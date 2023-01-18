@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ElTablero</string>
+    <string name="textoCantidad">Cantidad de numeros o colores</string>
+    <string name="textoCantidadX">Tablero en eje X</string>
+    <string name="textoCantidadY">Tablero en eje y</string>
+    <string name="rbColores">Colores</string>
+    <string name="rbNumeros">Numeros</string>
+    <string name="chechBoxSonido">Sonido</string>
+    <string name="chechBoxVibracion">Vibración</string>
+    <string name="empezarJuego">¡Vamos a jugar!</string>
+</resources>
