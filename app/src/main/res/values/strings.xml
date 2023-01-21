@@ -8,4 +8,11 @@
     <string name="chechBoxSonido">Sonido</string>
     <string name="chechBoxVibracion">Vibración</string>
     <string name="empezarJuego">¡Vamos a jugar!</string>
+    <string name="config">Configuracion</string>
+    <string name="help">Ayuda</string>
+    <string name="about">Acerca de</string>
+    <string name="textoAyuda">Texto ayuda ejemplo</string>
+    <string name="textoAbout">Programador: Dionisio Hernandez Romera 2ºDAM</string>
+    <string name="aboutTitle">Sobre la aplicacion</string>
+    <string name="howTo">Como jugar</string>
 </resources>
