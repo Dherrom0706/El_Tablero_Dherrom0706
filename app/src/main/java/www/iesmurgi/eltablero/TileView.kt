@@ -15,7 +15,7 @@ class TileView(context: Context,x:Int,y:Int,topElementos:Int,index:Int,backgroud
     fun getNewIndex(): Int{
 
         index++
-        if (index > topElementos)
+        if (index >= topElementos)
             index = 0
         return index
 
