@@ -1,9 +1,10 @@
 package www.iesmurgi.eltablero
 
 import android.content.Context
+import androidx.appcompat.widget.AppCompatButton
 
 open class Button
-class TileView(context: Context,x:Int,y:Int,topElementos:Int,index:Int,backgroud:Int): Button() {
+class TileView(context: Context,x:Int,y:Int,topElementos:Int,index:Int,backgroud:Int): AppCompatButton(context){
 
     var coordenadaX : Int = x
     var coordenadaY : Int = y
