@@ -49,6 +49,12 @@ class GameField : AppCompatActivity() {
         sonido = intent.extras?.getBoolean("SONIDO")!!
         vibracion = intent.extras?.getBoolean("VIBRACION")!!
 
+        var opcion = intent.extras?.getString("OPCION")
+        if (opcion == "colores"){
+            dibujos = colores
+        }else if (opcion == "numeros"){
+            dibujos = numeros
+        }
         var miLin: LinearLayout = findViewById(R.id.tableroId)
         miLin.removeAllViews()
         val dm:DisplayMetrics = resources.displayMetrics
@@ -59,19 +65,22 @@ class GameField : AppCompatActivity() {
         miCrono.start()
         var tv: TileView
         var ident = 0
+
         for (i in 0 .. topTileY-1){
+
             var l2: LinearLayout = LinearLayout(this)
             l2.orientation = LinearLayout.HORIZONTAL
             for (j in 0 .. topTileX-1){
                 var tramaToShow = miRandom()
                 values[j][i] = tramaToShow
 
-                tv= TileView(this,j,i,topElement,tramaToShow,tramaToShow)
+                tv= TileView(this,j,i,topElement,tramaToShow,dibujos[tramaToShow])
                 ident++
 
                 tv.id = ident
                 ids[j][i] = ident
                 tv.layoutParams = LinearLayout.LayoutParams(0,height,1.0f)
+
                 tv.setOnClickListener {
                     var x = it.x
                     var y = it.y
@@ -92,6 +101,8 @@ class GameField : AppCompatActivity() {
                             }
                         }
                     }
+
+                    print("ln")
 
                    if (x == 0f && y == 0f){
                        changeView(0,1)
@@ -135,9 +146,7 @@ class GameField : AppCompatActivity() {
 
                 }
                 l2.addView(tv)
-                tv.setOnClickListener {
 
-                }
             }
             miLin.addView(l2)
 
@@ -150,7 +159,8 @@ class GameField : AppCompatActivity() {
         var tt: TileView = findViewById(ids[x][y])
         var newIndex = tt.getNewIndex()
         values[x][y] = newIndex
-        tt.setBackgroundResource(dibujos[newIndex])
+
+        tt.setBackgroundColor(dibujos[newIndex])
         tt.invalidate()
     }
     fun checkIfFinished(){
