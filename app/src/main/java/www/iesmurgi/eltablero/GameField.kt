@@ -18,9 +18,7 @@ import kotlin.random.Random
 
 class GameField : AppCompatActivity() {
 
-    val colores = arrayOf(Color.RED, Color.GREEN,Color.BLUE,Color.BLACK,Color.YELLOW,Color.MAGENTA)
-    val numeros = arrayOf(1,2,3,4,5,6)
-    lateinit var dibujos: Array<Int>
+
     var topTileX : Int = 0
     var topTileY : Int = 0
     var topElement : Int = 0
@@ -32,7 +30,7 @@ class GameField : AppCompatActivity() {
     lateinit var mp:MediaPlayer
     lateinit var vibratorService: Vibrator
     lateinit var textView: TextView
-
+    lateinit var opcion: String
     @SuppressLint("ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +47,8 @@ class GameField : AppCompatActivity() {
         sonido = intent.extras?.getBoolean("SONIDO")!!
         vibracion = intent.extras?.getBoolean("VIBRACION")!!
 
-        var opcion = intent.extras?.getString("OPCION")
-        if (opcion == "colores"){
-            dibujos = colores
-        }else if (opcion == "numeros"){
-            dibujos = numeros
-        }
+        opcion = intent.extras?.getString("OPCION").toString()
+
         var miLin: LinearLayout = findViewById(R.id.tableroId)
         miLin.removeAllViews()
         val dm:DisplayMetrics = resources.displayMetrics
@@ -66,24 +60,30 @@ class GameField : AppCompatActivity() {
         var tv: TileView
         var ident = 0
 
-        for (i in 0 .. topTileY-1){
+        for (y in 0 until topTileY){
 
             var l2: LinearLayout = LinearLayout(this)
             l2.orientation = LinearLayout.HORIZONTAL
-            for (j in 0 .. topTileX-1){
+            for (x in 0 until topTileX){
                 var tramaToShow = miRandom()
-                values[j][i] = tramaToShow
+                values[x][y] = tramaToShow
 
-                tv= TileView(this,j,i,topElement,tramaToShow,dibujos[tramaToShow])
+                println(tramaToShow)
+                tv= TileView(this,x,y,topElement,tramaToShow,tramaToShow)
                 ident++
-
+                if (opcion == "colores"){
+                    tv.colores()
+                }else{
+                    tv.numeros()
+                }
                 tv.id = ident
-                ids[j][i] = ident
-                tv.layoutParams = LinearLayout.LayoutParams(0,height,1.0f)
+                ids[x][y] = ident
+
 
                 tv.setOnClickListener {
-                    var x = it.x
-                    var y = it.y
+
+                    /*var posX = it.x.toInt()
+                    var posY = it.y.toInt()*/
                     if (sonido)
                         mp.start()
                     if (vibracion){
@@ -102,38 +102,36 @@ class GameField : AppCompatActivity() {
                         }
                     }
 
-                    print("ln")
-
-                   if (x == 0f && y == 0f){
+                   if (x == 0 && y == 0){
                        changeView(0,1)
                        changeView(1,0)
                        changeView(1,1)
-                   }else if (x == 0f && y == (topTileY - 1).toFloat()){
+                   }else if (x == 0 && y == (topTileY - 1)){
                        changeView(0,topTileY-2)
                        changeView(1,topTileY-2)
                        changeView(1,topTileY-1)
-                   }else if (x == (topTileX - 1).toFloat() && y == 0f){
+                   }else if (x == (topTileX - 1) && y == 0){
                        changeView(topTileX-2,0)
                        changeView(topTileX-2,1)
                        changeView(topTileX-1,1)
-                   }else if (x == (topTileX - 1).toFloat() && y == (topTileY - 1).toFloat()){
+                   }else if (x == (topTileX - 1) && y == (topTileY - 1)){
                        changeView(topTileX-2,topTileY-2)
                        changeView(topTileX-2,topTileY-1)
                        changeView(topTileX-1,topTileY-2)
                    }
-                   else if (x == 0f){
+                   else if (x == 0){
                        changeView(x.toInt(),(y-1).toInt())
                        changeView(x.toInt(),(y+1).toInt())
                        changeView((x+1).toInt(),y.toInt())
-                   }else if (y == 0f){
+                   }else if (y == 0){
                        changeView((x-1).toInt(),y.toInt())
                        changeView((x+1).toInt(),y.toInt())
                        changeView(x.toInt(),(y+1).toInt())
-                   }else if (x == (topTileX - 1).toFloat()){
+                   }else if (x == (topTileX - 1)){
                        changeView(x.toInt(),(y-1).toInt())
                        changeView(x.toInt(),(y+1).toInt())
                        changeView((x-1).toInt(),y.toInt())
-                   }else if (y == (topTileY - 1).toFloat()){
+                   }else if (y == (topTileY - 1)){
                        changeView((x-1).toInt(),y.toInt())
                        changeView((x+1).toInt(),y.toInt())
                        changeView(x.toInt(),(y-1).toInt())
@@ -143,8 +141,12 @@ class GameField : AppCompatActivity() {
                        changeView(x.toInt(),(y-1).toInt())
                        changeView(x.toInt(),(y+1).toInt())
                    }
-
+                    //tv = TileView(this,x,y,topElement,tramaToShow,tramaToShow)
+                    tv.getNewIndex()
+                    changeView(x,y)
+                    println(tramaToShow)
                 }
+                tv.layoutParams = LinearLayout.LayoutParams(0,height,1.0f)
                 l2.addView(tv)
 
             }
@@ -152,17 +154,21 @@ class GameField : AppCompatActivity() {
 
         }
 
-
-
     }
+
     fun changeView(x: Int, y:Int){
+        print(x+y)
         var tt: TileView = findViewById(ids[x][y])
         var newIndex = tt.getNewIndex()
         values[x][y] = newIndex
-
-        tt.setBackgroundColor(dibujos[newIndex])
+        if (opcion == "colores"){
+            tt.colores()
+        }else if(opcion == "numeros"){
+            tt.numeros()
+        }
         tt.invalidate()
     }
+
     fun checkIfFinished(){
         var valor = values[0][0]
         for (i in 0 .. topTileY){
@@ -177,7 +183,7 @@ class GameField : AppCompatActivity() {
 
     fun miRandom(): Int{
 
-        return Random.nextInt(0,topElement)
+        return (1..topElement).random()
 
     }
 }
