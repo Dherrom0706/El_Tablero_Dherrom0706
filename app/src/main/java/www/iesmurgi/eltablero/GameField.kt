@@ -60,6 +60,11 @@ class GameField : AppCompatActivity() {
         var tv: TileView
         var ident = 0
 
+        if (sonido){
+            mp = MediaPlayer.create(this,R.raw.doom_musica)
+            mp.start()
+        }
+
         for (y in 0 until topTileY){
 
             var l2: LinearLayout = LinearLayout(this)
@@ -84,8 +89,7 @@ class GameField : AppCompatActivity() {
 
                     /*var posX = it.x.toInt()
                     var posY = it.y.toInt()*/
-                    if (sonido)
-                        mp.start()
+
                     if (vibracion){
                         vibratorService = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as Vibrator
                         if (vibratorService.hasVibrator()){
@@ -136,15 +140,14 @@ class GameField : AppCompatActivity() {
                        changeView((x+1).toInt(),y.toInt())
                        changeView(x.toInt(),(y-1).toInt())
                    }else{
-                       changeView((x-1).toInt(),y.toInt())
-                       changeView((x+1).toInt(),y.toInt())
+                       changeView((x-1),y.toInt())
+                       changeView((x+1),y.toInt())
                        changeView(x.toInt(),(y-1).toInt())
                        changeView(x.toInt(),(y+1).toInt())
                    }
                     //tv = TileView(this,x,y,topElement,tramaToShow,tramaToShow)
                     tv.getNewIndex()
                     changeView(x,y)
-                    println(tramaToShow)
                 }
                 tv.layoutParams = LinearLayout.LayoutParams(0,height,1.0f)
                 l2.addView(tv)
@@ -155,6 +158,7 @@ class GameField : AppCompatActivity() {
         }
 
     }
+
 
     fun changeView(x: Int, y:Int){
         print(x+y)
