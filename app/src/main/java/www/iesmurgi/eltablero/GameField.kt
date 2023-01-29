@@ -3,22 +3,20 @@ package www.iesmurgi.eltablero
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.os.Vibrator
-import android.service.quicksettings.Tile
+import android.os.VibratorManager
 import android.util.DisplayMetrics
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import kotlin.random.Random
 
 class GameField : AppCompatActivity() {
 
 
+    private var numberOfClicks = 0
     var topTileX : Int = 0
     var topTileY : Int = 0
     var topElement : Int = 0
@@ -36,7 +34,7 @@ class GameField : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_field)
 
-        textView = findViewById(R.id.textoTablero)
+        textView = findViewById(R.id.textoTableroContador)
         topTileX = intent.extras?.getInt("X")!!
         topTileY = intent.extras?.getInt("Y")!!
 
@@ -53,7 +51,7 @@ class GameField : AppCompatActivity() {
         miLin.removeAllViews()
         val dm:DisplayMetrics = resources.displayMetrics
         var height = (dm.heightPixels - 500)/topTileY
-        var width = dm.widthPixels / topTileX
+
 
         var miCrono: Chronometer = findViewById(R.id.cronometro)
         miCrono.start()
@@ -84,71 +82,10 @@ class GameField : AppCompatActivity() {
                 tv.id = ident
                 ids[x][y] = ident
 
+                //metodo para cambiar cambiar celdas
+                cambiarCelda(tv, x, y)
 
-                tv.setOnClickListener {
 
-                    /*var posX = it.x.toInt()
-                    var posY = it.y.toInt()*/
-
-                    if (vibracion){
-                        vibratorService = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as Vibrator
-                        if (vibratorService.hasVibrator()){
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                                vibratorService.vibrate(
-                                    VibrationEffect.createOneShot(
-                                        100,
-                                        VibrationEffect.DEFAULT_AMPLITUDE
-                                    )
-                                )
-                            }else{
-                                vibratorService.vibrate(100)
-                            }
-                        }
-                    }
-
-                   if (x == 0 && y == 0){
-                       changeView(0,1)
-                       changeView(1,0)
-                       changeView(1,1)
-                   }else if (x == 0 && y == (topTileY - 1)){
-                       changeView(0,topTileY-2)
-                       changeView(1,topTileY-2)
-                       changeView(1,topTileY-1)
-                   }else if (x == (topTileX - 1) && y == 0){
-                       changeView(topTileX-2,0)
-                       changeView(topTileX-2,1)
-                       changeView(topTileX-1,1)
-                   }else if (x == (topTileX - 1) && y == (topTileY - 1)){
-                       changeView(topTileX-2,topTileY-2)
-                       changeView(topTileX-2,topTileY-1)
-                       changeView(topTileX-1,topTileY-2)
-                   }
-                   else if (x == 0){
-                       changeView(x.toInt(),(y-1).toInt())
-                       changeView(x.toInt(),(y+1).toInt())
-                       changeView((x+1).toInt(),y.toInt())
-                   }else if (y == 0){
-                       changeView((x-1).toInt(),y.toInt())
-                       changeView((x+1).toInt(),y.toInt())
-                       changeView(x.toInt(),(y+1).toInt())
-                   }else if (x == (topTileX - 1)){
-                       changeView(x.toInt(),(y-1).toInt())
-                       changeView(x.toInt(),(y+1).toInt())
-                       changeView((x-1).toInt(),y.toInt())
-                   }else if (y == (topTileY - 1)){
-                       changeView((x-1).toInt(),y.toInt())
-                       changeView((x+1).toInt(),y.toInt())
-                       changeView(x.toInt(),(y-1).toInt())
-                   }else{
-                       changeView((x-1),y.toInt())
-                       changeView((x+1),y.toInt())
-                       changeView(x.toInt(),(y-1).toInt())
-                       changeView(x.toInt(),(y+1).toInt())
-                   }
-                    //tv = TileView(this,x,y,topElement,tramaToShow,tramaToShow)
-                    tv.getNewIndex()
-                    changeView(x,y)
-                }
                 tv.layoutParams = LinearLayout.LayoutParams(0,height,1.0f)
                 l2.addView(tv)
 
@@ -157,6 +94,80 @@ class GameField : AppCompatActivity() {
 
         }
 
+    }
+
+
+    @SuppressLint("ServiceCast")
+    private fun cambiarCelda(tv: TileView, x: Int, y: Int) {
+        tv.setOnClickListener {
+
+            /*var posX = it.x.toInt()
+            var posY = it.y.toInt()*/
+
+            if (vibracion){
+                vibratorService = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as Vibrator
+                if (vibratorService.hasVibrator()){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                        vibratorService.vibrate(
+                            VibrationEffect.createOneShot(
+                                100,
+                                VibrationEffect.DEFAULT_AMPLITUDE
+                            )
+                        )
+                    }else{
+                        vibratorService.vibrate(100)
+                    }
+                }
+            }
+
+            if (x == 0 && y == 0){
+                changeView(0,1)
+                changeView(1,0)
+                changeView(1,1)
+            }else if (x == 0 && y == (topTileY - 1)){
+                changeView(0,topTileY-2)
+                changeView(1,topTileY-2)
+                changeView(1,topTileY-1)
+            }else if (x == (topTileX - 1) && y == 0){
+                changeView(topTileX-2,0)
+                changeView(topTileX-2,1)
+                changeView(topTileX-1,1)
+            }else if (x == (topTileX - 1) && y == (topTileY - 1)){
+                changeView(topTileX-2,topTileY-2)
+                changeView(topTileX-2,topTileY-1)
+                changeView(topTileX-1,topTileY-2)
+            }
+            else if (x == 0){
+                changeView(x,(y-1).toInt())
+                changeView(x,(y+1).toInt())
+                changeView((x+1),y.toInt())
+            }else if (y == 0){
+                changeView((x-1),y)
+                changeView((x+1),y)
+                changeView(x,(y+1))
+            }else if (x == (topTileX - 1)){
+                changeView(x,(y-1))
+                changeView(x,(y+1))
+                changeView((x-1),y)
+            }else if (y == (topTileY - 1)){
+                changeView((x-1),y)
+                changeView((x+1),y)
+                changeView(x,(y-1))
+            }else{
+                changeView((x-1),y)
+                changeView((x+1),y)
+                changeView(x,(y-1))
+                changeView(x,(y+1))
+            }
+            println(x.toString()+""+y.toString())
+            tv.getNewIndex()
+            changeView(x,y)
+            numberOfClicks++
+            var campoClicks = findViewById<TextView>(R.id.textoTableroContador)
+            campoClicks.text = (campoClicks.text.toString().toInt() + 1).toString()
+            checkIfFinished()
+
+        }
     }
 
 
@@ -175,14 +186,19 @@ class GameField : AppCompatActivity() {
 
     fun checkIfFinished(){
         var valor = values[0][0]
-        for (i in 0 .. topTileY){
-            for (j in 0 .. topTileX){
-                if (values[j][i] != valor)
+        for (i in 0 until topTileY){
+            for (j in 0 until topTileX){
+                if (values[j][i] != valor){
+                    Toast.makeText(this, "Ha ganado con un total de $numberOfClicks",Toast.LENGTH_SHORT).show()
                     return
+                }
+
             }
         }
-
-
+        var resultIntent: Intent = Intent()
+        resultIntent.putExtra("CLICKS",numberOfClicks)
+        setResult(RESULT_OK,resultIntent)
+        finish()
     }
 
     fun miRandom(): Int{
