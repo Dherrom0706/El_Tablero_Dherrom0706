@@ -189,8 +189,9 @@ class GameField : AppCompatActivity() {
         for (i in 0 until topTileY){
             for (j in 0 until topTileX){
                 if (values[j][i] != valor){
-                    Toast.makeText(this, "Ha ganado con un total de $numberOfClicks",Toast.LENGTH_SHORT).show()
                     return
+                }else if(values[j][i] == valor){
+                    Toast.makeText(this, "Ha ganado con un total de $numberOfClicks",Toast.LENGTH_SHORT).show()
                 }
 
             }
